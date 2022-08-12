@@ -5,7 +5,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ page: 1, per_page: 3 })
+			body: JSON.stringify({ page: 1, per_page: 15 })
 		});
 		const { data } = await response.json();
 		return {
