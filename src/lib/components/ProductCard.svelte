@@ -4,12 +4,12 @@
 	import { Label } from '@smui/button';
 
 	export let data: Product;
-	console.log(data);
 	const { variations } = data ?? [];
+	const { slug } = data ?? '';
 </script>
 
 <div class="group">
-	<a href="#">
+	<a href={`/products/${slug}`}>
 		<div class="w-full aspect-w-1 aspect-h-1 max-h-80 rounded-lg overflow-hidden">
 			<img
 				src={data.images[0].src}
@@ -24,7 +24,7 @@
 		<h3>{data.name}</h3>
 		<p>${data.price}</p>
 	</div>
-	<Button variant="unelevated"
+	<Button variant="unelevated" color="primary"
 		><Label>{variations.length > 0 ? 'See options' : 'Add to cart'}</Label></Button
 	>
 </div>

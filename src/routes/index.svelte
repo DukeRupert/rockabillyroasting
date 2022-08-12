@@ -21,7 +21,6 @@
 	import ProductCard from '$lib/components/ProductCard.svelte';
 	import type { Products } from '$lib/types/woocommerce/products';
 	export let data: Products;
-	console.log(data);
 </script>
 
 <!-- Product grid -->
