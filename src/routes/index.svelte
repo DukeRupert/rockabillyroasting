@@ -1,2 +1,24 @@
-<h1 class="text-red-700">Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script context="module">
+	export async function load({ fetch }) {
+		const response = await fetch('/api/products.json', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ page: 1, per_page: 15 })
+		});
+		const data = await response.json();
+		return {
+			status: 200,
+			props: {
+				data
+			}
+		};
+	}
+</script>
+
+<script lang="ts">
+	export let data;
+</script>
+
+<pre>{JSON.stringify(data)}</pre>
