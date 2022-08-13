@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { Product } from '$lib/types/woocommerce/products';
-	import Button from '@smui/button';
-	import { Label } from '@smui/button';
 	import LoadingSpinner from './LoadingSpinner.svelte';
 
 	export let id: number;
@@ -47,7 +45,7 @@
 			</div>
 		</div>
 		<div class="mt-6">
-			<Button variant="unelevated" color="secondary"><Label>Add to cart</Label></Button>
+			<button type="button" class="btn btn-secondary">Add to cart</button>
 		</div>
 	{/await}
 </div>

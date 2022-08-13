@@ -5,7 +5,7 @@ const config = {
 		extend: {}
 	},
 
-	plugins: [require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio')]
+	plugins: [require('daisyui'), require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio')]
 };
 
 module.exports = config;

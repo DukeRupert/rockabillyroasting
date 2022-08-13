@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { Product } from '$lib/types/woocommerce/products';
-	import Button from '@smui/button';
-	import { Label } from '@smui/button';
 
 	export let data: Product;
 	const { variations } = data ?? [];
@@ -24,7 +22,7 @@
 		<h3>{data.name}</h3>
 		<p>${data.price}</p>
 	</div>
-	<Button variant="unelevated" color="primary"
-		><Label>{variations.length > 0 ? 'See options' : 'Add to cart'}</Label></Button
+	<button type="button" class="btn btn-primary"
+		>{variations.length > 0 ? 'See options' : 'Add to cart'}</button
 	>
 </div>

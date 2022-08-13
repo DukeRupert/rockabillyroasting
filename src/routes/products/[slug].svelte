@@ -28,14 +28,14 @@
 <script lang="ts">
 	import RelatedProductCard from '$lib/components/RelatedProductCard.svelte';
 	import type { Product } from '$lib/types/woocommerce/products';
-	import Button from '@smui/button';
-	import { Label } from '@smui/button';
 
 	export let data: Product;
 	console.log(data);
 
 	const { images, related_ids } = data ?? [];
 	let activeImage = 0;
+
+	const { attributes } = data ?? [];
 </script>
 
 <main class="max-w-7xl mx-auto sm:pt-16 sm:px-6 lg:px-8">
@@ -189,9 +189,7 @@
 
 				<form class="mt-6">
 					<div class="mt-10 flex sm:flex-col1">
-						<Button variant="raised" color="primary" type="submit" class="max-w-xs flex-1"
-							><Label>Add to cart</Label></Button
-						>
+						<button type="button" class="btn btn-primary max-w-xs flex-1">Add to cart</button>
 
 						<button
 							type="button"
