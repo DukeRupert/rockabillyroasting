@@ -26,8 +26,11 @@
 </script>
 
 <script lang="ts">
+	import Attribute from '$lib/components/Attribute.svelte';
 	import RelatedProductCard from '$lib/components/RelatedProductCard.svelte';
+	import ReviewStars from '$lib/components/ReviewStars.svelte';
 	import type { Product } from '$lib/types/woocommerce/products';
+	import { onMount } from 'svelte';
 
 	export let data: Product;
 	console.log(data);
@@ -36,6 +39,45 @@
 	let activeImage = 0;
 
 	const { attributes } = data ?? [];
+
+	interface AttributeDetail {
+		id: number;
+		name: string;
+		option: string;
+	}
+
+	let selectedAttributes: AttributeDetail[] = [];
+	$: console.log(selectedAttributes);
+
+	function handleAttributeChoice(event) {
+		const { detail } = event ?? { id: 1 };
+		let newAttributes = [...selectedAttributes];
+		let exists = selectedAttributes.findIndex(({ id }) => id == detail.id);
+		if (exists == -1) {
+			newAttributes.push(detail);
+			selectedAttributes = newAttributes;
+		} else {
+			newAttributes[exists] = detail;
+			selectedAttributes = newAttributes;
+		}
+	}
+
+	async function getVariants(id: number) {
+		const response = await fetch('/api/variants.json', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: id })
+		});
+		const data = await response.json();
+		return data;
+	}
+
+	onMount(async () => {
+		const variants = await getVariants(data.id);
+		console.log(variants);
+	});
 </script>
 
 <main class="max-w-7xl mx-auto sm:pt-16 sm:px-6 lg:px-8">
@@ -100,82 +142,7 @@
 				</div>
 
 				<!-- Reviews -->
-				<div class="mt-3">
-					<h3 class="sr-only">Reviews</h3>
-					<div class="flex items-center">
-						<div class="flex items-center">
-							<!--
-                  Heroicon name: solid/star
-
-                  Active: "text-indigo-500", Inactive: "text-gray-300"
-                -->
-							<svg
-								class="h-5 w-5 flex-shrink-0 text-indigo-500"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-								/>
-							</svg>
-
-							<!-- Heroicon name: solid/star -->
-							<svg
-								class="h-5 w-5 flex-shrink-0 text-indigo-500"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-								/>
-							</svg>
-
-							<!-- Heroicon name: solid/star -->
-							<svg
-								class="h-5 w-5 flex-shrink-0 text-indigo-500"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-								/>
-							</svg>
-
-							<!-- Heroicon name: solid/star -->
-							<svg
-								class="h-5 w-5 flex-shrink-0 text-indigo-500"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-								/>
-							</svg>
-
-							<!-- Heroicon name: solid/star -->
-							<svg
-								class="h-5 w-5 flex-shrink-0 text-gray-300"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-								/>
-							</svg>
-						</div>
-						<p class="sr-only">4 out of 5 stars</p>
-					</div>
-				</div>
+				<ReviewStars />
 
 				<div class="mt-6">
 					<h3 class="sr-only">Description</h3>
@@ -186,6 +153,12 @@
 						</p>
 					</div>
 				</div>
+
+				{#if data.attributes}
+					{#each attributes as attribute}
+						<Attribute {attribute} on:attributeChoice={handleAttributeChoice} />
+					{/each}
+				{/if}
 
 				<form class="mt-6">
 					<div class="mt-10 flex sm:flex-col1">
