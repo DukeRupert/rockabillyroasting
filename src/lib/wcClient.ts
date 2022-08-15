@@ -1,5 +1,6 @@
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import pkg from '@woocommerce/woocommerce-rest-api';
 import { WP_KEY, WP_SECRET, ROOT } from '$lib/constants';
+const WooCommerceRestApi = pkg.default;
 
 const wcClient = new WooCommerceRestApi({
 	url: ROOT,
