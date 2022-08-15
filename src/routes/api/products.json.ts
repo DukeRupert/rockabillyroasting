@@ -11,12 +11,6 @@ export async function POST({ request }) {
 		const response = await wcClient.get(`products/${id}`);
 		const data = await response.data;
 
-		// const [product, variations] = await Promise.all([
-		// 	wcClient.get(`products/${id}`).then((r) => r.data),
-		// 	wcClient.get(`products/${id}/variations`).then((r) => r.data)
-		// ]);
-		// const data = { product, variations };
-
 		return {
 			status: 200,
 			body: { data }

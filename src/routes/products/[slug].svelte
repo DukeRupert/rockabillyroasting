@@ -10,35 +10,83 @@
 		});
 		const { data } = await response.json();
 		const product = data[0];
+		const { id } = product ?? 0;
 
-		if (product) {
+		const res = await fetch('/api/variants.json', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: id })
+		});
+		const { data: variants } = await res.json();
+
+		if (product && variants) {
 			return {
 				status: 200,
 				props: {
-					data: product
+					product,
+					variants
 				}
 			};
 		}
 		return {
-			status: 404
+			status: 404,
+			body: 'Fetch product failed'
 		};
 	}
 </script>
 
 <script lang="ts">
 	import Attribute from '$lib/components/Attribute.svelte';
+	import GiftToggle from '$lib/components/GiftToggle.svelte';
+	import OrderType from '$lib/components/OrderType.svelte';
+	import PlanPicker from '$lib/components/PlanPicker.svelte';
 	import RelatedProductCard from '$lib/components/RelatedProductCard.svelte';
 	import ReviewStars from '$lib/components/ReviewStars.svelte';
 	import type { Product } from '$lib/types/woocommerce/products';
-	import { onMount } from 'svelte';
+	import type { Variant } from '$lib/types/woocommerce/variants';
+	import { slide } from 'svelte/transition';
+	import { quadInOut } from 'svelte/easing';
 
-	export let data: Product;
-	console.log(data);
+	interface SubscriptionPlan {
+		subscription_period_interval: string;
+		subscription_period: string;
+		subscription_length: string;
+		subscription_pricing_method: string;
+		subscription_regular_price: string;
+		subscription_sale_price: string;
+		subscription_discount: number;
+		position: string;
+		subscription_price: string;
+		subscription_payment_sync_date: number;
+	}
 
-	const { images, related_ids } = data ?? [];
+	export let product: Product;
+	export let variants: Variant[];
+	console.log(product);
+	// console.log(variants);
+
+	let promptIndex = product.meta_data.findIndex((el) => el.key == '_wcsatt_subscription_prompt');
+	const prompt = product.meta_data[promptIndex].value;
+
+	let subPlansIndex = product.meta_data.findIndex((el) => el.key == '_wcsatt_schemes');
+	const subPlans: SubscriptionPlan[] = product.meta_data[subPlansIndex].value;
+
+	function getGiftOptions(arr: SubscriptionPlan[], gift: boolean) {
+		let result = [];
+		if (!gift) {
+			result = arr.filter((el) => el.subscription_length == '0');
+			return result;
+		}
+		result = arr.filter((el) => el.subscription_length != '0');
+		return result;
+	}
+
+	const { images, related_ids } = product ?? [];
 	let activeImage = 0;
 
-	const { attributes } = data ?? [];
+	const { attributes } = product ?? [];
 
 	interface AttributeDetail {
 		id: number;
@@ -47,7 +95,28 @@
 	}
 
 	let selectedAttributes: AttributeDetail[] = [];
-	$: console.log(selectedAttributes);
+
+	function findVariant(attributes: Attribute[], variants: Variant[]): number {
+		let filters: string[] = [];
+		let v = [...variants];
+		attributes.map((el) => filters.push(el.option));
+
+		if (filters.length > 0) {
+			filters.forEach((filter) => {
+				v = v.filter((el) => el.attributes.forEach((el) => el.name === filter));
+			});
+		}
+
+		return 1;
+	}
+
+	$: selectedVariant = findVariant(selectedAttributes, variants);
+
+	let subscribe = 0;
+	let gift = false;
+	$: console.log(gift);
+	$: plans = getGiftOptions(subPlans, gift);
+	$: console.log(plans);
 
 	function handleAttributeChoice(event) {
 		const { detail } = event ?? { id: 1 };
@@ -62,6 +131,16 @@
 		}
 	}
 
+	function handleSubscription(event) {
+		subscribe = event.detail.subscribe;
+	}
+
+	function handleGift(event) {
+		gift = event.detail.gift;
+	}
+
+	let options = ['fish', 'beef', 'pork'];
+
 	async function getVariants(id: number) {
 		const response = await fetch('/api/variants.json', {
 			method: 'POST',
@@ -73,11 +152,6 @@
 		const data = await response.json();
 		return data;
 	}
-
-	onMount(async () => {
-		const variants = await getVariants(data.id);
-		console.log(variants);
-	});
 </script>
 
 <main class="max-w-7xl mx-auto sm:pt-16 sm:px-6 lg:px-8">
@@ -134,11 +208,11 @@
 
 			<!-- Product info -->
 			<div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-				<h1 class="text-3xl font-bold tracking-tight text-gray-900">{data.name}</h1>
+				<h1 class="text-3xl font-bold tracking-tight text-gray-900">{product.name}</h1>
 
 				<div class="mt-3">
 					<h2 class="sr-only">Product information</h2>
-					<p class="tracking-tight text-3xl text-gray-900">${data.price}</p>
+					<p class="tracking-tight text-3xl text-gray-900">${product.price}</p>
 				</div>
 
 				<!-- Reviews -->
@@ -149,15 +223,24 @@
 
 					<div class="text-base text-gray-700 space-y-6">
 						<p>
-							{@html data.description}
+							{@html product.description}
 						</p>
 					</div>
 				</div>
 
-				{#if data.attributes}
+				{#if product.attributes}
 					{#each attributes as attribute}
 						<Attribute {attribute} on:attributeChoice={handleAttributeChoice} />
 					{/each}
+					<GiftToggle on:gift={handleGift} />
+				{/if}
+
+				{#if selectedAttributes.length == 2}
+					<OrderType on:subscription={handleSubscription} {prompt} />
+				{/if}
+
+				{#if subscribe == 1}
+					<PlanPicker {plans} {gift} />
 				{/if}
 
 				<form class="mt-6">

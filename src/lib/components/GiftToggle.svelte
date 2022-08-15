@@ -1,21 +1,27 @@
 <script lang="ts">
-	// Todo
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
+	let isGift = false;
+	$: dispatch('gift', {
+		gift: isGift
+	});
 </script>
 
-<div class="relative flex items-start">
-	<div class="flex items-center h-5">
-		<input
-			id="comments"
-			aria-describedby="comments-description"
-			name="comments"
-			type="checkbox"
-			class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-		/>
-	</div>
-	<div class="ml-3 text-sm">
-		<label for="comments" class="font-medium text-gray-700">New comments</label>
-		<span id="comments-description" class="text-gray-500"
-			><span class="sr-only">New comments </span>so you always know what's happening.</span
-		>
+<div class="mt-6">
+	<div class="flex items-center justify-between" />
+	<div class="relative flex items-start mt-4">
+		<div class="flex items-left h-5">
+			<input
+				bind:checked={isGift}
+				id="comments"
+				aria-describedby="comments-description"
+				name="comments"
+				type="checkbox"
+				class="focus:ring-primary h-4 w-4 text-secondary border-gray-300 rounded"
+			/>
+		</div>
+		<div class="ml-3 text-sm">
+			<h2 class="text-sm font-medium text-gray-900">Is this a gift?</h2>
+		</div>
 	</div>
 </div>
