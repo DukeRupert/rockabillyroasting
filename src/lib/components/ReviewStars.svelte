@@ -9,10 +9,10 @@
 			<!--
                   Heroicon name: solid/star
 
-                  Active: "text-indigo-500", Inactive: "text-gray-300"
+                  Active: "text-primary", Inactive: "text-gray-300"
                 -->
 			<svg
-				class="h-5 w-5 flex-shrink-0 text-indigo-500"
+				class="h-5 w-5 flex-shrink-0 text-primary"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
@@ -25,7 +25,7 @@
 
 			<!-- Heroicon name: solid/star -->
 			<svg
-				class="h-5 w-5 flex-shrink-0 text-indigo-500"
+				class="h-5 w-5 flex-shrink-0 text-primary"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
@@ -38,7 +38,7 @@
 
 			<!-- Heroicon name: solid/star -->
 			<svg
-				class="h-5 w-5 flex-shrink-0 text-indigo-500"
+				class="h-5 w-5 flex-shrink-0 text-primary"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
@@ -51,7 +51,7 @@
 
 			<!-- Heroicon name: solid/star -->
 			<svg
-				class="h-5 w-5 flex-shrink-0 text-indigo-500"
+				class="h-5 w-5 flex-shrink-0 text-primary"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
