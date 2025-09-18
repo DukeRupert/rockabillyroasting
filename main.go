@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,17 +14,17 @@ import (
 type ProductCategory string
 
 const (
-	CategoryCoffee	ProductCategory = "20"
+	CategoryCoffee ProductCategory = "20"
 )
 
 type ProductStatus string
 
 const (
-	StatusAny	ProductStatus = "any"
-	StatusDraft	ProductStatus = "draft"
-	StatusPending ProductStatus = "pending"
-	StatusPrivate ProductStatus	= "private"
-	StatusPublished	ProductStatus = "publish"
+	StatusAny       ProductStatus = "any"
+	StatusDraft     ProductStatus = "draft"
+	StatusPending   ProductStatus = "pending"
+	StatusPrivate   ProductStatus = "private"
+	StatusPublished ProductStatus = "publish"
 )
 
 func main() {
@@ -53,14 +54,20 @@ func main() {
 	e.GET("/products", func(c echo.Context) error {
 		opts := &woocommerce.ListProductParams{
 			Category: string(CategoryCoffee),
-			Status: string(StatusPublished),
+			Status:   string(StatusPublished),
 		}
 
-		products, _, err := client.Products.List(opts)
+		products, res, err := client.Products.List(opts)
 		if err != nil {
 			log.Printf("error fetching products list: %s", err.Error())
 			c.Error(err)
 		}
+
+		// Pagination headers.
+		totalPages := res.Header.Get("X-Wp-Totalpages")
+		totalItems := res.Header.Get("X-Wp-Total")
+
+		fmt.Printf("Pagination data, totalPages: %s, totalItems: %s", totalPages, totalItems)
 		return c.JSON(http.StatusOK, products)
 	})
 	e.Logger.Fatal(e.Start(":1323"))
